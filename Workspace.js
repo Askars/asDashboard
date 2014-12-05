@@ -54,3 +54,13 @@ WorkspaceObj.prototype.setSpinnerVisibility = function(visibility) {
     }
 }
 
+WorkspaceObj.prototype.setSize = function (width, height) {
+    if (width != null) {
+        $(this.contentDiv).css('width', width);
+    }
+    if (height != null) {
+        $(this.contentDiv).css('height', height);
+    }
+    
+}
+
