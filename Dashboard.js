@@ -1,7 +1,7 @@
 DashboardObj = function() {
     var self = this;
     self.parent  = null;
-    self.containingDiv = null;
+    self.contentDiv = null;
     self.titleSectionObj = null;
     self.sideMenuObj = null;
     self.workspaceObj = new WorkspaceObj();
@@ -12,7 +12,7 @@ DashboardObj = function() {
 DashboardObj.prototype.attachToDiv = function(contentDiv) {
     var self = this;
     if (contentDiv != null) {
-        self.containingDiv = contentDiv;
+        self.contentDiv = contentDiv;
         var titleSectionDiv = document.createElement('div');
         var sideMenuDiv = document.createElement('div');
         var workspaceDiv = document.createElement('div');
@@ -48,4 +48,20 @@ DashboardObj.prototype.setTitleSectionObj = function(titleSectionObj) {
         this.titleSectionObj = titleSectionObj;
         titleSectionObj.parent = this;
     }
+}
+
+DashboardObj.prototype.handleResize = function() {
+    this.sideMenuObj.resizeMenu();
+    this.workspaceObj.setSize(
+        this.contentDiv.clientWidth - this.sideMenuObj.minWidth,
+        this.contentDiv.clientHeight - this.titleSectionObj.contentDiv.clientHeight
+    );
+}
+
+DashboardObj.prototype.showOverlayDiv = function() {
+    this.overlayDiv.style.visibility = 'visible';
+}
+
+DashboardObj.prototype.hideOverlayDiv = function() {
+    this.overlayDiv.style.visibility = 'hidden';
 }

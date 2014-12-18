@@ -145,17 +145,25 @@ SideMenuObj.prototype.attachToDiv = function(contentDiv) {
         // Add some jquery reactivity
         $(self.contentDiv).hover(
             function () {
-                self.animateWidth(self.maxWidth);
-                self.parent.titleSectionObj.hideMainTitle();
-                self.expandUserSection();
+                self.expand()
             },
             function () {
-                self.animateWidth(self.minWidth);
-                self.parent.titleSectionObj.showMainTitle();
-                self.collapseUserSection();
+                self.collapse()
             }
         );
     }
+}
+
+SideMenuObj.prototype.expand = function() {
+    this.animateWidth(this.maxWidth);
+    this.parent.titleSectionObj.hideMainTitle();
+    this.expandUserSection();
+}
+
+SideMenuObj.prototype.collapse = function() {
+    this.animateWidth(this.minWidth);
+    this.parent.titleSectionObj.showMainTitle();
+    this.collapseUserSection();
 }
 
 SideMenuObj.prototype.setUserSectionObj = function(userSectionObj) {
