@@ -1,17 +1,25 @@
-LeftMenuBtnObj = function(parent, className, text, collapseOnClick, onclick, href) {
+LeftMenuBtnObj = function(parent, className, titleTextArr, text, onclick, href) {
     var self = this;
     self.selected = false;
     self.parentMenu = parent;
+    self.leftTitleText = titleTextArr[0];
+    self.rightTitleText = titleTextArr[1];
+    self.subMenu = new RightSubMenuObj(270);
     
     self.contentDiv = document.createElement('div');
     self.contentDiv.className = "MenuBtn " + className;
     
     if (onclick != null) {
         $(self.contentDiv).click(function () {
-            if (collapseOnClick) {
+            onclick();
+        });
+    } else {
+        $(self.contentDiv).click(function () {
+            if (self.subMenu.buttons.length) {
+                self.subMenu.setSubTitle(self.leftTitleText, self.rightTitleText);
+                self.subMenu.showDefault();
                 self.parentMenu.collapse();
             }
-            onclick();
         });
     }
     
@@ -41,8 +49,6 @@ LeftMenuBtnObj = function(parent, className, text, collapseOnClick, onclick, hre
         self.contentDiv.appendChild(self.iconDiv);
         self.contentDiv.appendChild(textDiv);
     }
-    
-
     
     $(self.contentDiv).hover(
         function () {
@@ -105,6 +111,10 @@ LeftMenuBtnObj.prototype.setSelected = function (isSelected) {
         this.unhighlight();
          
     }
+}
+
+LeftMenuBtnObj.prototype.addSubMenuButton = function() {
+    
 }
 
 LeftMenuObj = function(minwidth, maxwidth) {
