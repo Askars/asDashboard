@@ -57,3 +57,11 @@ DashboardObj.prototype.handleResize = function() {
         this.contentDiv.clientHeight - this.titleSectionObj.contentDiv.clientHeight
     );
 }
+
+DashboardObj.prototype.showOverlayDiv = function() {
+    this.overlayDiv.style.visibility = 'visible';
+}
+
+DashboardObj.prototype.hideOverlayDiv = function() {
+    this.overlayDiv.style.visibility = 'hidden';
+}
