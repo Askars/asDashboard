@@ -201,6 +201,7 @@ LeftMenuObj.prototype.expand = function() {
     if (! self.expanded) {
         self.animateWidth(self.maxWidth);
         self.parent.setRightMenuOffset(self.maxWidth);
+        self.parent.collapseRightMenu();
         self.expandBtnText();
         self.expanded = true;
     }
@@ -212,6 +213,7 @@ LeftMenuObj.prototype.collapse = function() {
     if (self.expanded) {
         self.animateWidth(self.minWidth);
         self.parent.setRightMenuOffset(self.minWidth);
+        self.parent.expandRightMenu();
         self.collapseBtnText();
         self.expanded = false;
     }

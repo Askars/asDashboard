@@ -13,7 +13,6 @@ RightSubMenuObj = function(width) {
     self.wrapperDiv = null;
     self.width = width;
     self.buttons = [];
-    self.expanded = false;
     
     // We do this one a little differently, we own the contentDiv and the parent supplies a wrappingDiv
     // This is because we want to keep everything in the menu self contained for detach/reattachments.
