@@ -32,12 +32,26 @@ RightSubMenuObj = function(width) {
     $(floatClear).css('clear', 'both').appendTo($(titleDiv));
     
     titleDiv.appendChild(floatClear);
+    
+    self.buttonsDiv = document.createElement('div');
+    self.contentDiv.appendChild(self.buttonsDiv);
 
 };
 
 RightSubMenuObj.prototype.addButton = function (text, description, titleTextArr, onclick, href) {
     var self = this;
     self.buttons.push(new RightSubMenuBtnObj(self, text, description, titleTextArr, onclick, href));
+    
+    var div = document.createElement('div');
+    $(div).addClass('RightMenuButton').appendTo(self.buttonsDiv).html(text);
+    if (self.buttons.length == 1) {
+        $(div).addClass('RightMenuButtonFirst');
+    }
+    
+    
+    
+    
+    
 }
 
 RightSubMenuObj.prototype.setSubTitle = function (leftText, rightText) {
