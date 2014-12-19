@@ -110,6 +110,7 @@ SideMenuObj = function(minwidth, maxwidth) {
     self.userSectionHref = null;
     self.leftMenuObj = null;
     self.rightMenuObj = null;
+    self.rightMenuDiv = null;
 };
 
 SideMenuObj.prototype.attachToDiv = function(contentDiv) {
@@ -133,14 +134,18 @@ SideMenuObj.prototype.attachToDiv = function(contentDiv) {
         menuSectionDiv.className = "MenuSectionDiv";
         
         var leftMenuDiv = document.createElement('div');
-        var rightMenuDiv = document.createElement('div');
+        self.rightMenuDiv = document.createElement('div');
         contentDiv.appendChild(menuSectionDiv);
         menuSectionDiv.appendChild(leftMenuDiv);
-        menuSectionDiv.appendChild(rightMenuDiv);
+        menuSectionDiv.appendChild(self.rightMenuDiv);
+        self.rightMenuDiv.className = "RightMenuWrapperDiv";
+        
+        if (self.leftMenuObj != null) {
+            $(this.rightMenuDiv).css('left', self.leftMenuObj.minWidth + 'px');
+        }
         
         self.userSectionObj.attachToDiv(userSectionDiv);
         self.leftMenuObj.attachToDiv(leftMenuDiv);
-        //self.rightMenuObj.attachToDiv(leftMenuObj);
         
         // Add some jquery reactivity
         $(self.contentDiv).hover(
@@ -166,6 +171,14 @@ SideMenuObj.prototype.collapse = function() {
     this.collapseUserSection();
 }
 
+SideMenuObj.prototype.setRightMenuOffset = function(target_offset) {
+    $(this.rightMenuDiv).stop(true);
+    $(this.rightMenuDiv).animate(
+        {left: target_offset},
+        500
+    );
+}
+
 SideMenuObj.prototype.setUserSectionObj = function(userSectionObj) {
     if (userSectionObj != null) {
         this.userSectionObj = userSectionObj;
@@ -180,11 +193,13 @@ SideMenuObj.prototype.setLeftMenuObj = function(leftMenuObj) {
     }
 }
 
-SideMenuObj.prototype.setRightMenuObj = function(rightMenuObj) {
-    if (rightMenuObj != null) {
-        this.rightMenuObj = rightMenuObj;
-        rightMenuObj.parent = this;
+SideMenuObj.prototype.attachRightMenu = function(rightMenuObj) {
+    var self = this;
+    if (self.rightMenuObj != null) {
+       rightMenuObj.detachDiv();
     }
+    self.rightMenuObj = rightMenuObj;
+    rightMenuObj.attachToDiv(self.rightMenuDiv);
 }
 
 SideMenuObj.prototype.getUserSectionObj = function() {

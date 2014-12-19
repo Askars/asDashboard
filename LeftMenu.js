@@ -1,10 +1,16 @@
-LeftMenuBtnObj = function(parent, className, titleTextArr, text, onclick, href) {
+LeftMenuBtnObj = function(parent, className, text, titleTextArr, onclick, href) {
     var self = this;
     self.selected = false;
     self.parentMenu = parent;
-    self.leftTitleText = titleTextArr[0];
-    self.rightTitleText = titleTextArr[1];
-    self.subMenu = new RightSubMenuObj(270);
+    
+    self.leftTitleText = null;
+    self.rightTitleText = null;
+    if (titleTextArr) {
+        self.leftTitleText = titleTextArr[0];
+        self.rightTitleText = (titleTextArr.length > 1 ? titleTextArr[1] : null);
+    }
+    
+    self.subMenu = null;
     
     self.contentDiv = document.createElement('div');
     self.contentDiv.className = "MenuBtn " + className;
@@ -14,9 +20,12 @@ LeftMenuBtnObj = function(parent, className, titleTextArr, text, onclick, href) 
             onclick();
         });
     } else {
+        self.subMenu = new RightSubMenuObj(self.parentMenu.parent.maxWidth - self.parentMenu.minWidth); // SideMenu max - Leftmenu min
         $(self.contentDiv).click(function () {
             if (self.subMenu.buttons.length) {
                 self.subMenu.setSubTitle(self.leftTitleText, self.rightTitleText);
+                self.parentMenu.parent.parent.titleSectionObj.changeMainTitle(self.leftTitleText, self.rightTitleText);
+                self.parentMenu.parent.attachRightMenu(self.subMenu);
                 self.subMenu.showDefault();
                 self.parentMenu.collapse();
             }
@@ -113,8 +122,11 @@ LeftMenuBtnObj.prototype.setSelected = function (isSelected) {
     }
 }
 
-LeftMenuBtnObj.prototype.addSubMenuButton = function() {
-    
+LeftMenuBtnObj.prototype.addSubMenuButton = function(text, description, titleTextArr, onclick, href) {
+    var self = this;
+    if (self.subMenu != null) {
+        self.subMenu.addButton(text, description, titleTextArr, onclick, href)
+    }
 }
 
 LeftMenuObj = function(minwidth, maxwidth) {
@@ -127,9 +139,11 @@ LeftMenuObj = function(minwidth, maxwidth) {
     self.expanded = false;
 };
 
-LeftMenuObj.prototype.addButton = function (className, text, collapseOnClick, onclick, href) {
+LeftMenuObj.prototype.addButton = function (className, text, titleTextArr, onclick, href) {
     var self = this;
-    self.sections[self.sections.length - 1].push(new LeftMenuBtnObj(self, className, text, collapseOnClick, onclick, href));
+    var new_btn = new LeftMenuBtnObj(self, className, text, titleTextArr, onclick, href);
+    self.sections[self.sections.length - 1].push(new_btn);
+    return new_btn;
 }
 
 LeftMenuObj.prototype.newSection = function () {
@@ -186,6 +200,7 @@ LeftMenuObj.prototype.expand = function() {
     var self = this;
     if (! self.expanded) {
         self.animateWidth(self.maxWidth);
+        self.parent.setRightMenuOffset(self.maxWidth);
         self.expandBtnText();
         self.expanded = true;
     }
@@ -196,6 +211,7 @@ LeftMenuObj.prototype.collapse = function() {
     var self = this;
     if (self.expanded) {
         self.animateWidth(self.minWidth);
+        self.parent.setRightMenuOffset(self.minWidth);
         self.collapseBtnText();
         self.expanded = false;
     }
