@@ -1,10 +1,34 @@
-RightSubMenuBtnObj = function(parent, text, description, titleTextArr, onclick, href) {
+RightSubMenuBtnObj = function(parentMenu, parentDiv, isFirst, title, description, onclick, href) {
     var self = this;
     self.selected = false;
     self.parentMenu = parent;
-    self.leftTitleText = titleTextArr[0];
-    self.rightTitleText = titleTextArr[1];
-    self.onclick = onclick;
+    
+    self.contentDiv = document.createElement('div');
+    $(self.contentDiv).addClass('RightMenuButton').appendTo(parentDiv).click(onclick);
+    if (isFirst) {
+        $(self.contentDiv).addClass('RightMenuButtonFirst');
+    }
+    var titleDiv = document.createElement('div');
+    $(titleDiv).addClass('RightMenuButtonTitle').appendTo(self.contentDiv).html(title);
+    var descDiv = document.createElement('div');
+    $(descDiv).addClass('RightMenuButtonDesc').appendTo(self.contentDiv).html(description);
+    
+    $(self.contentDiv).hover(
+        function () {
+            $(self.contentDiv).stop(true);
+            $(self.contentDiv).animate(
+                {height: (26 + descDiv.clientHeight)},
+                300
+            );
+        },
+        function () {
+            $(self.contentDiv).stop(true);
+            $(self.contentDiv).animate(
+                {height: 26},
+                300
+            );
+        }
+    );
 }
 
 RightSubMenuObj = function(width) {
@@ -38,20 +62,12 @@ RightSubMenuObj = function(width) {
 
 };
 
-RightSubMenuObj.prototype.addButton = function (text, description, titleTextArr, onclick, href) {
+RightSubMenuObj.prototype.addButton = function (text, description, onclick, href) {
     var self = this;
-    self.buttons.push(new RightSubMenuBtnObj(self, text, description, titleTextArr, onclick, href));
     
-    var div = document.createElement('div');
-    $(div).addClass('RightMenuButton').appendTo(self.buttonsDiv).html(text);
-    if (self.buttons.length == 1) {
-        $(div).addClass('RightMenuButtonFirst');
-    }
-    
-    
-    
-    
-    
+    var isFirst = (self.buttons.length == 0);
+    self.buttons.push(new RightSubMenuBtnObj(self, self.buttonsDiv, isFirst, text, description, onclick, href));
+
 }
 
 RightSubMenuObj.prototype.setSubTitle = function (leftText, rightText) {
