@@ -24,7 +24,7 @@ LeftMenuBtnObj = function(parent, className, text, titleTextArr, onclick, href) 
         $(self.contentDiv).click(function () {
             if (self.subMenu.buttons.length) {
                 self.subMenu.setSubTitle(self.leftTitleText, self.rightTitleText);
-                self.parentMenu.parent.parent.titleSectionObj.changeMainTitle(self.leftTitleText, self.rightTitleText);
+                //self.parentMenu.parent.parent.titleSectionObj.changeMainTitle(self.leftTitleText, self.rightTitleText);
                 self.parentMenu.parent.attachRightMenu(self.subMenu);
                 self.subMenu.showDefault();
                 self.parentMenu.collapse();
@@ -122,10 +122,10 @@ LeftMenuBtnObj.prototype.setSelected = function (isSelected) {
     }
 }
 
-LeftMenuBtnObj.prototype.addSubMenuButton = function(text, description, titleTextArr, onclick, href) {
+LeftMenuBtnObj.prototype.addSubMenuButton = function(text, description, onclick, href) {
     var self = this;
     if (self.subMenu != null) {
-        self.subMenu.addButton(text, description, titleTextArr, onclick, href)
+        self.subMenu.addButton(text, description, onclick, href)
     }
 }
 
