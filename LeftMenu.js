@@ -20,7 +20,7 @@ LeftMenuBtnObj = function(parent, className, text, titleTextArr, onclick, href) 
             onclick();
         });
     } else {
-        self.subMenu = new RightSubMenuObj(self.parentMenu.parent.maxWidth - self.parentMenu.minWidth); // SideMenu max - Leftmenu min
+        self.subMenu = new RightSubMenuObj(self, self.parentMenu.parent.maxWidth - self.parentMenu.minWidth); // SideMenu max - Leftmenu min
         $(self.contentDiv).click(function () {
             if (self.subMenu.buttons.length) {
                 self.subMenu.setSubTitle(self.leftTitleText, self.rightTitleText);
@@ -125,8 +125,9 @@ LeftMenuBtnObj.prototype.setSelected = function (isSelected) {
 LeftMenuBtnObj.prototype.addSubMenuButton = function(text, description, onclick, href) {
     var self = this;
     if (self.subMenu != null) {
-        self.subMenu.addButton(text, description, onclick, href)
+        return self.subMenu.addButton(text, description, onclick, href)
     }
+    return null;
 }
 
 LeftMenuObj = function(minwidth, maxwidth) {

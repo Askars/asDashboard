@@ -1,7 +1,7 @@
 RightSubMenuBtnObj = function(parentMenu, parentDiv, isFirst, title, description, onclick, href) {
     var self = this;
     self.selected = false;
-    self.parentMenu = parent;
+    self.parentMenu = parentMenu;
     
     self.contentDiv = document.createElement('div');
     $(self.contentDiv).addClass('RightMenuButton').appendTo(parentDiv).click(onclick);
@@ -31,9 +31,13 @@ RightSubMenuBtnObj = function(parentMenu, parentDiv, isFirst, title, description
     );
 }
 
-RightSubMenuObj = function(width) {
+RightSubMenuBtnObj.prototype.emulateClick = function() {
+    $(this.contentDiv).trigger('click');
+}
+
+RightSubMenuObj = function(parentBtn, width) {
     var self = this;
-    self.parent  = null;
+    self.parentBtn = parentBtn;
     self.wrapperDiv = null;
     self.width = width;
     self.buttons = [];
@@ -66,8 +70,11 @@ RightSubMenuObj.prototype.addButton = function (text, description, onclick, href
     var self = this;
     
     var isFirst = (self.buttons.length == 0);
-    self.buttons.push(new RightSubMenuBtnObj(self, self.buttonsDiv, isFirst, text, description, onclick, href));
-
+    
+    var new_btn = new RightSubMenuBtnObj(self, self.buttonsDiv, isFirst, text, description, onclick, href)
+    self.buttons.push(new_btn);
+    
+    return new_btn;
 }
 
 RightSubMenuObj.prototype.setSubTitle = function (leftText, rightText) {
