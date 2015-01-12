@@ -65,3 +65,11 @@ DashboardObj.prototype.showOverlayDiv = function() {
 DashboardObj.prototype.hideOverlayDiv = function() {
     this.overlayDiv.style.visibility = 'hidden';
 }
+
+DashboardObj.prototype.showHelpOverlayDiv = function() {
+    this.helpOverlayDiv.style.visibility = 'visible';
+}
+
+DashboardObj.prototype.hideHelpOverlayDiv = function() {
+    this.helpOverlayDiv.style.visibility = 'hidden';
+}
