@@ -96,7 +96,7 @@ DashboardObj.prototype.buildAlertSkeleton = function () {
     result.msgDiv = document.createElement('div');
     
     var clearDiv = document.createElement('div');
-    var centeringDiv = createHorizontalCenterer(self.alertOverlayDiv, "AlertDialogWrapper");
+    var centeringDiv = createTotalCenterer(self.alertOverlayDiv, null);
     
     $(result.modalDiv).addClass("AlertDialog").appendTo($(centeringDiv));
     $(result.iconDiv).addClass("AlertIconDiv").appendTo($(result.modalDiv));
@@ -115,6 +115,8 @@ DashboardObj.prototype.alert = function(msg) {
     skeletonDivs = this.buildAlertSkeleton();
     $(skeletonDivs.msgDiv).html(msg);
     
+    $(skeletonDivs.iconDiv).addClass('AlertIconAlert');
+    
     var okDiv = document.createElement('div');
     
     $(okDiv).addClass("AlertBtn").html("OK").appendTo($(skeletonDivs.modalDiv)).click(function () {
@@ -127,25 +129,38 @@ DashboardObj.prototype.alert = function(msg) {
 
 }
 
-DashboardObj.prototype.confirm = function(msg, auto_hide, ok_callback, cancel_callback) {
+DashboardObj.prototype.confirm = function(config) {
     var self = this;
     
-    skeletonDivs = this.buildAlertSkeleton();
-    $(skeletonDivs.msgDiv).html(msg);
+    self.alertOverlayDiv.innerHTML = "";
+    self.showAlertOverlayDiv();
     
-    var cancelDiv = document.createElement('div');
-    $(cancelDiv).addClass("AlertBtn").html("Cancel").appendTo($(skeletonDivs.modalDiv)).click(function () {
-        cancel_callback();
-        if (auto_hide) {
+    /* var example = {
+        msg: "Example message",
+        auto_hide: false,
+        show_close: false,
+        ok_callback: function () {},
+        cancel_callback: function () {}
+    }*/
+    
+    skeletonDivs = this.buildAlertSkeleton();
+    $(skeletonDivs.msgDiv).html(config.msg);
+    
+    $(skeletonDivs.iconDiv).addClass('AlertIconQuestion');
+    
+    var okDiv = document.createElement('div');
+    $(okDiv).addClass("AlertBtn").html("OK").appendTo($(skeletonDivs.modalDiv)).click(function () {
+        config.ok_callback();
+        if (config.auto_hide) {
             self.hideAlertOverlayDiv();
             self.alertOverlayDiv.innerHTML = "";
         }
     });
     
-    var okDiv = document.createElement('div');
-    $(okDiv).addClass("AlertBtn").html("OK").appendTo($(skeletonDivs.modalDiv)).click(function () {
-        ok_callback();
-        if (auto_hide) {
+    var cancelDiv = document.createElement('div');
+    $(cancelDiv).addClass("AlertBtn").html("Cancel").appendTo($(skeletonDivs.modalDiv)).click(function () {
+        config.cancel_callback();
+        if (config.auto_hide) {
             self.hideAlertOverlayDiv();
             self.alertOverlayDiv.innerHTML = "";
         }
@@ -153,5 +168,50 @@ DashboardObj.prototype.confirm = function(msg, auto_hide, ok_callback, cancel_ca
     
     clearDiv = document.createElement('div');
     $(clearDiv).css("clear", "both").appendTo($(skeletonDivs.modalDiv)); 
+}
+
+DashboardObj.prototype.options = function(config) {
+    
+    /* var example = {
+        msg: "Example message",
+        auto_hide: false,
+        show_close: false,
+        buttons: [
+            {
+                text: "Text",
+                callback: function() {}
+            }
+        ]
+    }*/
+    
+    var self = this;
+    
+    self.alertOverlayDiv.innerHTML = "";
+    self.showAlertOverlayDiv();
+    
+    skeletonDivs = this.buildAlertSkeleton();
+    $(skeletonDivs.msgDiv).html(config.msg);
+    
+    $(skeletonDivs.iconDiv).addClass('AlertIconQuestion');
+    
+    for (var pos = config.buttons.length - 1; pos >= 0; pos--) {
+        this_button = config.buttons[pos];
+        var newDiv = document.createElement('div');
+        $(newDiv).addClass("AlertBtn").html(this_button.text).appendTo($(skeletonDivs.modalDiv)).click(
+            function (button) {
+                return function () {
+                    button.callback();
+                    if (config.auto_hide) {
+                        self.hideAlertOverlayDiv();
+                        self.alertOverlayDiv.innerHTML = "";    
+                    }
+                }
+            }(this_button)
+        );
+    }
+    
+    clearDiv = document.createElement('div');
+    $(clearDiv).css("clear", "both").appendTo($(skeletonDivs.modalDiv));
     
 }
+
