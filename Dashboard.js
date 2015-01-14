@@ -87,20 +87,29 @@ DashboardObj.prototype.hideAlertOverlayDiv = function() {
 }
 
 
-DashboardObj.prototype.buildAlertSkeleton = function () {
+// Is options = is a options dialog
+DashboardObj.prototype.buildAlertSkeleton = function (isOptions) {
     var self = this;
     var result = {};   
     
     result.modalDiv = document.createElement('div');
     result.iconDiv = document.createElement('div');
     result.msgDiv = document.createElement('div');
+    if (isOptions) {
+        result.rightDiv = document.createElement('div');
+    }
     
     var clearDiv = document.createElement('div');
     var centeringDiv = createTotalCenterer(self.alertOverlayDiv, null);
     
     $(result.modalDiv).addClass("AlertDialog").appendTo($(centeringDiv));
     $(result.iconDiv).addClass("AlertIconDiv").appendTo($(result.modalDiv));
-    $(result.msgDiv).addClass("AlertMsg").appendTo($(result.modalDiv));
+    if (isOptions) {
+        $(result.rightDiv).addClass("AlertOptionsDiv").appendTo($(result.modalDiv));
+        $(result.msgDiv).addClass("AlertMsg").appendTo($(result.rightDiv));
+    } else {
+        $(result.msgDiv).addClass("AlertMsg").appendTo($(result.modalDiv));    
+    }
     $(clearDiv).css("clear", "both").appendTo($(result.modalDiv));
        
     return result;
@@ -149,7 +158,7 @@ DashboardObj.prototype.confirm = function(config) {
     $(skeletonDivs.iconDiv).addClass('AlertIconQuestion');
     
     var okDiv = document.createElement('div');
-    $(okDiv).addClass("AlertBtn").html("OK").appendTo($(skeletonDivs.modalDiv)).click(function () {
+    $(okDiv).addClass("AlertBtn").addClass("AlertConfirmBtn").html("OK").appendTo($(skeletonDivs.modalDiv)).click(function () {
         config.ok_callback();
         if (config.auto_hide) {
             self.hideAlertOverlayDiv();
@@ -189,15 +198,15 @@ DashboardObj.prototype.options = function(config) {
     self.alertOverlayDiv.innerHTML = "";
     self.showAlertOverlayDiv();
     
-    skeletonDivs = this.buildAlertSkeleton();
-    $(skeletonDivs.msgDiv).html(config.msg);
+    skeletonDivs = this.buildAlertSkeleton(true);
+    $(skeletonDivs.msgDiv).html(config.msg).css('float','none');
     
     $(skeletonDivs.iconDiv).addClass('AlertIconQuestion');
     
-    for (var pos = config.buttons.length - 1; pos >= 0; pos--) {
+    for (var pos in config.buttons) {
         this_button = config.buttons[pos];
         var newDiv = document.createElement('div');
-        $(newDiv).addClass("AlertBtn").html(this_button.text).appendTo($(skeletonDivs.modalDiv)).click(
+        $(newDiv).addClass("AlertBtn").html(this_button.text).css('float','none').appendTo($(skeletonDivs.rightDiv)).click(
             function (button) {
                 return function () {
                     button.callback();
