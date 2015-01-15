@@ -115,7 +115,7 @@ DashboardObj.prototype.buildAlertSkeleton = function (isOptions) {
     return result;
 }
 
-DashboardObj.prototype.alert = function(msg) {
+DashboardObj.prototype.alert = function(msg, callback) {
     var self = this;
     
     self.alertOverlayDiv.innerHTML = "";
@@ -129,6 +129,9 @@ DashboardObj.prototype.alert = function(msg) {
     var okDiv = document.createElement('div');
     
     $(okDiv).addClass("AlertBtn").html("OK").appendTo($(skeletonDivs.modalDiv)).click(function () {
+        if (callback) {
+            callback();
+        }
         self.hideAlertOverlayDiv();
         self.alertOverlayDiv.innerHTML = "";
     });
