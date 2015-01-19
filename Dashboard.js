@@ -70,6 +70,11 @@ DashboardObj.prototype.hideOverlayDiv = function() {
     this.overlayDiv.style.visibility = 'hidden';
 }
 
+DashboardObj.prototype.clearOverlayDiv = function() {
+    this.overlayDiv.innerHTML = '';
+}
+
+
 DashboardObj.prototype.showHelpOverlayDiv = function() {
     this.helpOverlayDiv.style.visibility = 'visible';
 }
@@ -99,8 +104,11 @@ DashboardObj.prototype.buildAlertSkeleton = function (isOptions) {
         result.rightDiv = document.createElement('div');
     }
     
+    result.clickCaptureDiv = document.createElement('div');
     var clearDiv = document.createElement('div');
-    var centeringDiv = createTotalCenterer(self.alertOverlayDiv, null);
+    
+    $(result.clickCaptureDiv).addClass('ClickCaptureDiv').appendTo($(self.alertOverlayDiv));
+    var centeringDiv = createTotalCenterer(result.clickCaptureDiv, null);
     
     $(result.modalDiv).addClass("AlertDialog").appendTo($(centeringDiv));
     $(result.iconDiv).addClass("AlertIconDiv").appendTo($(result.modalDiv));
@@ -203,6 +211,13 @@ DashboardObj.prototype.options = function(config) {
     
     skeletonDivs = this.buildAlertSkeleton(true);
     $(skeletonDivs.msgDiv).html(config.msg).css('float','none');
+    
+    if (config.show_close) {
+        $(skeletonDivs.clickCaptureDiv).click(function() {
+            self.hideAlertOverlayDiv();
+            self.alertOverlayDiv.innerHTML = "";
+        });
+    }
     
     $(skeletonDivs.iconDiv).addClass('AlertIconQuestion');
     
