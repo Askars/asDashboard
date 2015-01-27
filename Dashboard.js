@@ -74,7 +74,6 @@ DashboardObj.prototype.clearOverlayDiv = function() {
     this.overlayDiv.innerHTML = '';
 }
 
-
 DashboardObj.prototype.showHelpOverlayDiv = function() {
     this.helpOverlayDiv.style.visibility = 'visible';
 }
@@ -89,6 +88,10 @@ DashboardObj.prototype.showAlertOverlayDiv = function() {
 
 DashboardObj.prototype.hideAlertOverlayDiv = function() {
     this.alertOverlayDiv.style.visibility = 'hidden';
+}
+
+DashboardObj.prototype.clearAlertOverlayDiv = function() {
+    this.alertOverlayDiv.innerHTML = '';
 }
 
 
@@ -170,6 +173,9 @@ DashboardObj.prototype.confirm = function(config) {
     
     var okDiv = document.createElement('div');
     $(okDiv).addClass("AlertBtn").addClass("AlertConfirmBtn").html("OK").appendTo($(skeletonDivs.modalDiv)).click(function () {
+        if (config.ok_callback) {
+            config.ok_callback();
+        }
         config.ok_callback();
         if (config.auto_hide) {
             self.hideAlertOverlayDiv();
@@ -179,7 +185,9 @@ DashboardObj.prototype.confirm = function(config) {
     
     var cancelDiv = document.createElement('div');
     $(cancelDiv).addClass("AlertBtn").html("Cancel").appendTo($(skeletonDivs.modalDiv)).click(function () {
-        config.cancel_callback();
+        if (config.cancel_callback) {
+            config.cancel_callback();
+        }
         if (config.auto_hide) {
             self.hideAlertOverlayDiv();
             self.alertOverlayDiv.innerHTML = "";
