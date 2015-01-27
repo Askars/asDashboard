@@ -176,7 +176,6 @@ DashboardObj.prototype.confirm = function(config) {
         if (config.ok_callback) {
             config.ok_callback();
         }
-        config.ok_callback();
         if (config.auto_hide) {
             self.hideAlertOverlayDiv();
             self.alertOverlayDiv.innerHTML = "";
