@@ -226,6 +226,11 @@ DashboardObj.prototype.options = function(config) {
         });
     }
     
+    // Stop the event propagating up the DOM 
+    $(skeletonDivs.modalDiv).click(function(event) {
+        event.stopPropagation();
+    });
+    
     $(skeletonDivs.iconDiv).addClass('AlertIconQuestion');
     
     for (var pos in config.buttons) {
