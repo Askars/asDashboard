@@ -7,6 +7,7 @@ DashboardObj = function() {
     self.workspaceObj = new WorkspaceObj();
     self.overlayDiv = null;
     self.helpOverlayDiv = null;
+    self.alertOverlayDiv = null;
 };
 
 DashboardObj.prototype.attachToDiv = function(contentDiv) {
@@ -22,12 +23,15 @@ DashboardObj.prototype.attachToDiv = function(contentDiv) {
         
         self.overlayDiv = document.createElement('div');
         self.helpOverlayDiv = document.createElement('div');
+        self.alertOverlayDiv = document.createElement('div');
         
         self.overlayDiv.className = "OverlayDiv";
         self.helpOverlayDiv.className = "HelpOverlayDiv";
+        self.alertOverlayDiv.className = "AlertOverlayDiv";
         
         contentDiv.appendChild(self.overlayDiv);
         contentDiv.appendChild(self.helpOverlayDiv);
+        contentDiv.appendChild(self.alertOverlayDiv);
         
         self.workspaceObj.attachToDiv(workspaceDiv);
         self.titleSectionObj.attachToDiv(titleSectionDiv);
@@ -65,3 +69,188 @@ DashboardObj.prototype.showOverlayDiv = function() {
 DashboardObj.prototype.hideOverlayDiv = function() {
     this.overlayDiv.style.visibility = 'hidden';
 }
+
+DashboardObj.prototype.clearOverlayDiv = function() {
+    this.overlayDiv.innerHTML = '';
+}
+
+DashboardObj.prototype.showHelpOverlayDiv = function() {
+    this.helpOverlayDiv.style.visibility = 'visible';
+}
+
+DashboardObj.prototype.hideHelpOverlayDiv = function() {
+    this.helpOverlayDiv.style.visibility = 'hidden';
+}
+
+DashboardObj.prototype.showAlertOverlayDiv = function() {
+    this.alertOverlayDiv.style.visibility = 'visible';
+}
+
+DashboardObj.prototype.hideAlertOverlayDiv = function() {
+    this.alertOverlayDiv.style.visibility = 'hidden';
+}
+
+DashboardObj.prototype.clearAlertOverlayDiv = function() {
+    this.alertOverlayDiv.innerHTML = '';
+}
+
+
+// Is options = is a options dialog
+DashboardObj.prototype.buildAlertSkeleton = function (isOptions) {
+    var self = this;
+    var result = {};   
+    
+    result.modalDiv = document.createElement('div');
+    result.iconDiv = document.createElement('div');
+    result.msgDiv = document.createElement('div');
+    if (isOptions) {
+        result.rightDiv = document.createElement('div');
+    }
+    
+    result.clickCaptureDiv = document.createElement('div');
+    var clearDiv = document.createElement('div');
+    
+    $(result.clickCaptureDiv).addClass('ClickCaptureDiv').appendTo($(self.alertOverlayDiv));
+    var centeringDiv = createTotalCenterer(result.clickCaptureDiv, null);
+    
+    $(result.modalDiv).addClass("AlertDialog").appendTo($(centeringDiv));
+    $(result.iconDiv).addClass("AlertIconDiv").appendTo($(result.modalDiv));
+    if (isOptions) {
+        $(result.rightDiv).addClass("AlertOptionsDiv").appendTo($(result.modalDiv));
+        $(result.msgDiv).addClass("AlertMsg").appendTo($(result.rightDiv));
+    } else {
+        $(result.msgDiv).addClass("AlertMsg").appendTo($(result.modalDiv));    
+    }
+    $(clearDiv).css("clear", "both").appendTo($(result.modalDiv));
+       
+    return result;
+}
+
+DashboardObj.prototype.alert = function(msg, callback) {
+    var self = this;
+    
+    self.alertOverlayDiv.innerHTML = "";
+    self.showAlertOverlayDiv();
+    
+    skeletonDivs = this.buildAlertSkeleton();
+    $(skeletonDivs.msgDiv).html(msg);
+    
+    $(skeletonDivs.iconDiv).addClass('AlertIconAlert');
+    
+    var okDiv = document.createElement('div');
+    
+    $(okDiv).addClass("AlertBtn").html("OK").appendTo($(skeletonDivs.modalDiv)).click(function () {
+        if (callback) {
+            callback();
+        }
+        self.hideAlertOverlayDiv();
+        self.alertOverlayDiv.innerHTML = "";
+    });
+    
+    clearDiv = document.createElement('div');
+    $(clearDiv).css("clear", "both").appendTo($(skeletonDivs.modalDiv)); 
+
+}
+
+DashboardObj.prototype.confirm = function(config) {
+    var self = this;
+    
+    self.alertOverlayDiv.innerHTML = "";
+    self.showAlertOverlayDiv();
+    
+    /* var example = {
+        msg: "Example message",
+        auto_hide: false,
+        show_close: false,
+        ok_callback: function () {},
+        cancel_callback: function () {}
+    }*/
+    
+    skeletonDivs = this.buildAlertSkeleton();
+    $(skeletonDivs.msgDiv).html(config.msg);
+    
+    $(skeletonDivs.iconDiv).addClass('AlertIconQuestion');
+    
+    var okDiv = document.createElement('div');
+    $(okDiv).addClass("AlertBtn").addClass("AlertConfirmBtn").html("OK").appendTo($(skeletonDivs.modalDiv)).click(function () {
+        if (config.ok_callback) {
+            config.ok_callback();
+        }
+        if (config.auto_hide) {
+            self.hideAlertOverlayDiv();
+            self.alertOverlayDiv.innerHTML = "";
+        }
+    });
+    
+    var cancelDiv = document.createElement('div');
+    $(cancelDiv).addClass("AlertBtn").html("Cancel").appendTo($(skeletonDivs.modalDiv)).click(function () {
+        if (config.cancel_callback) {
+            config.cancel_callback();
+        }
+        if (config.auto_hide) {
+            self.hideAlertOverlayDiv();
+            self.alertOverlayDiv.innerHTML = "";
+        }
+    });
+    
+    clearDiv = document.createElement('div');
+    $(clearDiv).css("clear", "both").appendTo($(skeletonDivs.modalDiv)); 
+}
+
+DashboardObj.prototype.options = function(config) {
+    
+    /* var example = {
+        msg: "Example message",
+        auto_hide: false,
+        show_close: false,
+        buttons: [
+            {
+                text: "Text",
+                callback: function() {}
+            }
+        ]
+    }*/
+    
+    var self = this;
+    
+    self.alertOverlayDiv.innerHTML = "";
+    self.showAlertOverlayDiv();
+    
+    skeletonDivs = this.buildAlertSkeleton(true);
+    $(skeletonDivs.msgDiv).html(config.msg).css('float','none');
+    
+    if (config.show_close) {
+        $(skeletonDivs.clickCaptureDiv).click(function() {
+            self.hideAlertOverlayDiv();
+            self.alertOverlayDiv.innerHTML = "";
+        });
+    }
+    
+    // Stop the event propagating up the DOM 
+    $(skeletonDivs.modalDiv).click(function(event) {
+        event.stopPropagation();
+    });
+    
+    $(skeletonDivs.iconDiv).addClass('AlertIconQuestion');
+    
+    for (var pos in config.buttons) {
+        this_button = config.buttons[pos];
+        var newDiv = document.createElement('div');
+        $(newDiv).addClass("AlertBtn").html(this_button.text).css('float','none').appendTo($(skeletonDivs.rightDiv)).click(
+            function (button) {
+                return function () {
+                    button.callback();
+                    if (config.auto_hide) {
+                        self.hideAlertOverlayDiv();
+                        self.alertOverlayDiv.innerHTML = "";    
+                    }
+                }
+            }(this_button)
+        );
+    }
+    
+    clearDiv = document.createElement('div');
+    $(clearDiv).css("clear", "both").appendTo($(skeletonDivs.modalDiv));
+    
+}
+

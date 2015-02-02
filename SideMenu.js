@@ -110,6 +110,9 @@ SideMenuObj = function(minwidth, maxwidth) {
     self.userSectionHref = null;
     self.leftMenuObj = null;
     self.rightMenuObj = null;
+    self.rightMenuObjExpanded = false;
+    self.rightMenuWrapperDiv = null;
+    self.rightMenuOpacityDiv = null;
 };
 
 SideMenuObj.prototype.attachToDiv = function(contentDiv) {
@@ -133,14 +136,21 @@ SideMenuObj.prototype.attachToDiv = function(contentDiv) {
         menuSectionDiv.className = "MenuSectionDiv";
         
         var leftMenuDiv = document.createElement('div');
-        var rightMenuDiv = document.createElement('div');
+        self.rightMenuWrapperDiv = document.createElement('div');
+        self.rightMenuOpacityDiv = document.createElement('div');
         contentDiv.appendChild(menuSectionDiv);
         menuSectionDiv.appendChild(leftMenuDiv);
-        menuSectionDiv.appendChild(rightMenuDiv);
+        menuSectionDiv.appendChild(self.rightMenuWrapperDiv);
+        self.rightMenuWrapperDiv.className = "RightMenuWrapperDiv";
+        self.rightMenuWrapperDiv.appendChild(self.rightMenuOpacityDiv);
+        self.rightMenuOpacityDiv.className = "RightMenuOpacityDiv";
+        
+        if (self.leftMenuObj != null) {
+            $(this.rightMenuWrapperDiv).css('left', self.leftMenuObj.minWidth + 'px');
+        }
         
         self.userSectionObj.attachToDiv(userSectionDiv);
         self.leftMenuObj.attachToDiv(leftMenuDiv);
-        //self.rightMenuObj.attachToDiv(leftMenuObj);
         
         // Add some jquery reactivity
         $(self.contentDiv).hover(
@@ -158,12 +168,46 @@ SideMenuObj.prototype.expand = function() {
     this.animateWidth(this.maxWidth);
     this.parent.titleSectionObj.hideMainTitle();
     this.expandUserSection();
+    if (! this.leftMenuObj.expanded) {
+        this.expandRightMenu();
+    }
 }
 
 SideMenuObj.prototype.collapse = function() {
     this.animateWidth(this.minWidth);
+    this.collapseRightMenu();
     this.parent.titleSectionObj.showMainTitle();
     this.collapseUserSection();
+}
+
+SideMenuObj.prototype.setRightMenuOffset = function(target_offset) {
+    $(this.rightMenuWrapperDiv).stop(true);
+    $(this.rightMenuWrapperDiv).animate(
+        {left: target_offset},
+        500
+    );
+}
+
+SideMenuObj.prototype.expandRightMenu = function() {
+    if (! this.rightMenuObjExpanded) {
+        $(this.rightMenuOpacityDiv).stop();
+        $(this.rightMenuOpacityDiv).animate(
+            {opacity: 1},
+            500
+        );
+        this.rightMenuObjExpanded = true;
+    }
+}
+
+SideMenuObj.prototype.collapseRightMenu = function() {
+    if (this.rightMenuObjExpanded) {
+        $(this.rightMenuOpacityDiv).stop();
+        $(this.rightMenuOpacityDiv).animate(
+            {opacity: 0},
+            500
+        );
+        this.rightMenuObjExpanded = false;
+    }
 }
 
 SideMenuObj.prototype.setUserSectionObj = function(userSectionObj) {
@@ -180,11 +224,13 @@ SideMenuObj.prototype.setLeftMenuObj = function(leftMenuObj) {
     }
 }
 
-SideMenuObj.prototype.setRightMenuObj = function(rightMenuObj) {
-    if (rightMenuObj != null) {
-        this.rightMenuObj = rightMenuObj;
-        rightMenuObj.parent = this;
+SideMenuObj.prototype.attachRightMenu = function(rightMenuObj) {
+    var self = this;
+    if (self.rightMenuObj != null) {
+       rightMenuObj.detachDiv();
     }
+    self.rightMenuObj = rightMenuObj;
+    rightMenuObj.attachToDiv(self.rightMenuOpacityDiv);
 }
 
 SideMenuObj.prototype.getUserSectionObj = function() {
@@ -239,3 +285,4 @@ SideMenuObj.prototype.setUserSectionHref = function(address) {
 SideMenuObj.prototype.resizeMenu = function() {
     this.leftMenuObj.resizeSpacers(this.contentDiv.clientHeight - 100);
 }
+

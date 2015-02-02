@@ -125,7 +125,6 @@ TitleSectionObj.prototype.changeSubTitle = function(leftWord, rightWord) {
     this.subTitleObj.changeText(leftWord, rightWord);
 }
 
-
 TitleSectionObj.prototype.hideMainTitle = function() {
     this.mainTitleObj.hide();
 }
