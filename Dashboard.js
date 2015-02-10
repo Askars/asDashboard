@@ -301,40 +301,48 @@ DashboardObj.prototype.dropdown = function(config) {
         }
     }
     
-    if (config.show_close) {
+    /*if (config.show_close) {
         $(skeletonDivs.clickCaptureDiv).click(function () {cancel_function()});
-    }
+    }*/
     
     // Stop the event propagating up the DOM 
     $(skeletonDivs.modalDiv).click(function(event) {
         event.stopPropagation();
     });
     
+    var dropdown = document.createElement('select');
+    
+    var default_option = document.createElement('option');
+    default_option.text = "Please select...";
+    default_option.value = null;
+    dropdown.add(default_option);
+    
+    for (var pos in config.options) {
+        var this_option = config.options[pos];
+        var option = document.createElement('option');
+        option.text = this_option.text;
+        option.value = pos;
+        dropdown.add(option);
+    }
+    
     $(skeletonDivs.iconDiv).addClass('AlertIconQuestion');
     
     var okDiv = document.createElement('div');
     $(okDiv).addClass("AlertBtn").addClass("AlertConfirmBtn").html("OK").appendTo($(skeletonDivs.modalDiv)).click(function () {
-        if (config.ok_callback) {
-            config.ok_callback();
-        }
-        if (config.auto_hide) {
-            self.hideAlertOverlayDiv();
-            self.alertOverlayDiv.innerHTML = "";
+        if (dropdown.options[dropdown.selectedIndex].value != null) {
+            if (config.ok_callback) {
+                config.ok_callback(config.options[dropdown.options[dropdown.selectedIndex].value]);
+            }
+            if (config.auto_hide) {
+                self.hideAlertOverlayDiv();
+                self.alertOverlayDiv.innerHTML = "";
+            }
         }
     });
     
     if (config.show_close) {
         var cancelDiv = document.createElement('div');
         $(cancelDiv).addClass("AlertBtn").html("Cancel").appendTo($(skeletonDivs.modalDiv)).click(function () {cancel_function()}); 
-    }
-
-    var dropdown = document.createElement('select');
-    
-    for (var pos in config.options) {
-        var this_option = config.options[pos];
-        var option = document.createElement('option');
-        option.text = this_option.text;
-        dropdown.add(option);
     }
     
     $(dropdown).appendTo($(skeletonDivs.dropdownDiv));
