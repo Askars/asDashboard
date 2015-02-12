@@ -102,9 +102,13 @@ DashboardObj.prototype.buildAlertSkeleton = function (isOptions) {
     
     result.modalDiv = document.createElement('div');
     result.iconDiv = document.createElement('div');
+    
     result.msgDiv = document.createElement('div');
     if (isOptions) {
         result.rightDiv = document.createElement('div');
+    } else {
+        result.msgAndDropdownDiv = document.createElement('div');
+        result.dropdownDiv = document.createElement('div');
     }
     
     result.clickCaptureDiv = document.createElement('div');
@@ -119,7 +123,9 @@ DashboardObj.prototype.buildAlertSkeleton = function (isOptions) {
         $(result.rightDiv).addClass("AlertOptionsDiv").appendTo($(result.modalDiv));
         $(result.msgDiv).addClass("AlertMsg").appendTo($(result.rightDiv));
     } else {
-        $(result.msgDiv).addClass("AlertMsg").appendTo($(result.modalDiv));    
+        $(result.msgAndDropdownDiv).addClass("AlertMsg").appendTo($(result.modalDiv));
+        $(result.msgDiv).addClass("AlertMsgAndDropdown").appendTo($(result.msgAndDropdownDiv));
+        $(result.dropdownDiv).addClass("AlertDropdown").appendTo($(result.msgAndDropdownDiv));    
     }
     $(clearDiv).css("clear", "both").appendTo($(result.modalDiv));
        
@@ -161,7 +167,6 @@ DashboardObj.prototype.confirm = function(config) {
     /* var example = {
         msg: "Example message",
         auto_hide: false,
-        show_close: false,
         ok_callback: function () {},
         cancel_callback: function () {}
     }*/
@@ -203,6 +208,7 @@ DashboardObj.prototype.options = function(config) {
         msg: "Example message",
         auto_hide: false,
         show_close: false,
+        cancel_callback: function () {}
         buttons: [
             {
                 text: "Text",
@@ -221,8 +227,13 @@ DashboardObj.prototype.options = function(config) {
     
     if (config.show_close) {
         $(skeletonDivs.clickCaptureDiv).click(function() {
-            self.hideAlertOverlayDiv();
-            self.alertOverlayDiv.innerHTML = "";
+            if (config.cancel_callback) {
+                config.cancel_callback();
+            }
+            if (config.auto_hide) {
+                self.hideAlertOverlayDiv();
+                self.alertOverlayDiv.innerHTML = "";
+            }
         });
     }
     
@@ -248,6 +259,93 @@ DashboardObj.prototype.options = function(config) {
             }(this_button)
         );
     }
+    
+    clearDiv = document.createElement('div');
+    $(clearDiv).css("clear", "both").appendTo($(skeletonDivs.modalDiv));
+    
+}
+
+DashboardObj.prototype.dropdown = function(config) {
+    
+    /* var example = {
+        msg: "Example message",
+        auto_hide: false,
+        show_close: false,
+        cancel_callback: function()
+        options: [
+            {
+                text: "Text",
+                another_key: another_value,
+                ....
+            }
+        ]
+        ok_callback: function(selected_option_obj),
+        
+    }*/
+    
+    var self = this;
+    
+    self.alertOverlayDiv.innerHTML = "";
+    self.showAlertOverlayDiv();
+    
+    skeletonDivs = this.buildAlertSkeleton();
+    $(skeletonDivs.msgDiv).html(config.msg).css('float','none');
+    
+    var cancel_function = function () {
+        if (config.cancel_callback) {
+            config.cancel_callback();
+        }
+        if (config.auto_hide) {
+            self.hideAlertOverlayDiv();
+            self.alertOverlayDiv.innerHTML = "";
+        }
+    }
+    
+    /*if (config.show_close) {
+        $(skeletonDivs.clickCaptureDiv).click(function () {cancel_function()});
+    }*/
+    
+    // Stop the event propagating up the DOM 
+    $(skeletonDivs.modalDiv).click(function(event) {
+        event.stopPropagation();
+    });
+    
+    var dropdown = document.createElement('select');
+    
+    var default_option = document.createElement('option');
+    default_option.text = "Please select...";
+    default_option.value = null;
+    dropdown.add(default_option);
+    
+    for (var pos in config.options) {
+        var this_option = config.options[pos];
+        var option = document.createElement('option');
+        option.text = this_option.text;
+        option.value = pos;
+        dropdown.add(option);
+    }
+    
+    $(skeletonDivs.iconDiv).addClass('AlertIconQuestion');
+    
+    var okDiv = document.createElement('div');
+    $(okDiv).addClass("AlertBtn").addClass("AlertConfirmBtn").html("OK").appendTo($(skeletonDivs.modalDiv)).click(function () {
+        if (dropdown.options[dropdown.selectedIndex].value != null) {
+            if (config.ok_callback) {
+                config.ok_callback(config.options[dropdown.options[dropdown.selectedIndex].value]);
+            }
+            if (config.auto_hide) {
+                self.hideAlertOverlayDiv();
+                self.alertOverlayDiv.innerHTML = "";
+            }
+        }
+    });
+    
+    if (config.show_close) {
+        var cancelDiv = document.createElement('div');
+        $(cancelDiv).addClass("AlertBtn").html("Cancel").appendTo($(skeletonDivs.modalDiv)).click(function () {cancel_function()}); 
+    }
+    
+    $(dropdown).appendTo($(skeletonDivs.dropdownDiv));
     
     clearDiv = document.createElement('div');
     $(clearDiv).css("clear", "both").appendTo($(skeletonDivs.modalDiv));
