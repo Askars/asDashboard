@@ -93,6 +93,12 @@ DashboardObj.prototype.clearAlertOverlayDiv = function() {
     this.alertOverlayDiv.innerHTML = '';
 }
 
+DashboardObj.prototype.alertOverlayDivLoading = function() {
+    this.alertOverlayDiv.innerHTML = '';
+    addSpinnerToDiv(this.alertOverlayDiv);
+    this.alertOverlayDiv.style.visibility = 'visible';
+}
+
 // Is options = is a options dialog
 DashboardObj.prototype.buildAlertSkeleton = function (isOptions) {
     var self = this;
