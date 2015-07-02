@@ -39,7 +39,6 @@ DashboardObj.prototype.attachToDiv = function(contentDiv) {
     }
 }
 
-
 DashboardObj.prototype.setSideMenuObj = function(sideMenuObj) {
     if (sideMenuObj != null) {
         this.sideMenuObj = sideMenuObj;
@@ -94,6 +93,11 @@ DashboardObj.prototype.clearAlertOverlayDiv = function() {
     this.alertOverlayDiv.innerHTML = '';
 }
 
+DashboardObj.prototype.alertOverlayDivLoading = function() {
+    this.alertOverlayDiv.innerHTML = '';
+    addSpinnerToDiv(this.alertOverlayDiv);
+    this.alertOverlayDiv.style.visibility = 'visible';
+}
 
 // Is options = is a options dialog
 DashboardObj.prototype.buildAlertSkeleton = function (isOptions) {
@@ -350,5 +354,24 @@ DashboardObj.prototype.dropdown = function(config) {
     clearDiv = document.createElement('div');
     $(clearDiv).css("clear", "both").appendTo($(skeletonDivs.modalDiv));
     
+}
+
+DashboardObj.prototype.buildOverlayEditSpace = function (overlayDiv) {
+    var result = {};
+    result.info_div = document.createElement('div');
+    $(result.info_div).addClass("asEditSpaceContentAlignment asEditSpaceContent").appendTo($(overlayDiv));
+    
+    result.title_div = document.createElement('div');
+    $(result.title_div).addClass('asEditSpaceContentAlignment asEditSpaceHeader').appendTo($(overlayDiv));
+    
+    var buttons = document.createElement('div');
+    $(buttons).addClass('asEditSpaceContentAlignment asEditSpaceButtons').appendTo($(overlayDiv));
+    
+    result.cancel_btn = document.createElement('div');
+    $(result.cancel_btn).addClass('asEditSpaceButton').html('cancel').appendTo($(buttons));
+    result.done_btn = document.createElement('div');
+    $(result.done_btn).addClass('asEditSpaceButton').html('done').appendTo($(buttons));
+    
+    return result;
 }
 
