@@ -69,9 +69,18 @@ OverlaysObj.prototype.clearAlertOverlayDiv = function() {
 }
 
 OverlaysObj.prototype.alertOverlayDivLoading = function() {
+    var self = this;
     this.alertOverlayDiv.innerHTML = '';
-    addSpinnerToDiv(this.alertOverlayDiv);
-    this.alertOverlayDiv.style.visibility = 'visible';
+    var alertLoadingDiv = document.createElement('div');
+    var spinnerDiv = document.createElement('div');
+    var textDiv = document.createElement('div');
+
+    $(alertLoadingDiv).addClass("AlertLoadingDiv").addClass("total_centerer").appendTo($(self.alertOverlayDiv));
+    $(spinnerDiv).addClass("AlertLoadingSpinnerDiv").appendTo($(alertLoadingDiv));
+    $(textDiv).addClass("AlertLoadingTextDiv").html("Working...").appendTo($(alertLoadingDiv));
+
+    addSpinnerToDiv(spinnerDiv);
+    self.alertOverlayDiv.style.visibility = 'visible';
 }
 
 // Is options = is a options dialog
