@@ -90,6 +90,7 @@ OverlaysObj.prototype.buildAlertSkeleton = function () {
 
     result.middleDiv = document.createElement('div');
     result.iconDiv = document.createElement('div');
+    result.iconContainingDiv = document.createElement('div');
     result.rightDiv = document.createElement('div');
 
     result.bottomButtonsDiv = document.createElement('div');
@@ -102,6 +103,7 @@ OverlaysObj.prototype.buildAlertSkeleton = function () {
     $(result.contentDiv).addClass("AlertContent").appendTo($(result.modalDiv));
     $(result.middleDiv).addClass("AlertMiddleDiv").appendTo($(result.contentDiv));
     $(result.iconDiv).addClass("AlertIconDiv").appendTo($(result.middleDiv));
+    $(result.iconContainingDiv).appendTo($(result.iconDiv));
     $(result.rightDiv).addClass("AlertRightDiv").appendTo($(result.middleDiv));
 
     $(result.bottomButtonsDiv).addClass("AlertBottomButtonsDiv").appendTo($(result.contentDiv));
@@ -118,7 +120,7 @@ OverlaysObj.prototype.alert = function(msg, callback) {
     skeletonDivs = this.buildAlertSkeleton();
     $(skeletonDivs.rightDiv).html(msg);
 
-    $(skeletonDivs.iconDiv).addClass('AlertIconAlert');
+    $(skeletonDivs.iconContainingDiv).addClass('AlertIconAlert').html('&#xe600');
     $(skeletonDivs.titleBarDiv).html("ATTENTION");
 
     var okDiv = document.createElement('div');
@@ -156,7 +158,7 @@ OverlaysObj.prototype.confirm = function(config) {
     var msgDiv = document.createElement('div');
     $(msgDiv).html(config.msg).appendTo(skeletonDivs.rightDiv);
 
-    $(skeletonDivs.iconDiv).addClass('AlertIconQuestion');
+    $(skeletonDivs.iconContainingDiv).addClass('AlertIconQuestion').html('&#xe602');
     $(skeletonDivs.titleBarDiv).html("CONFIRMATION REQUIRED");
 
     var okDiv = document.createElement('div');
@@ -224,7 +226,8 @@ OverlaysObj.prototype.options = function(config) {
         event.stopPropagation();
     });
 
-    $(skeletonDivs.iconDiv).addClass('AlertIconQuestion');
+
+    $(skeletonDivs.iconContainingDiv).addClass('AlertIconQuestion').html('&#xe602');
     $(skeletonDivs.titleBarDiv).html("CHOICE REQUIRED");
 
     var msgDiv = document.createElement('div');
@@ -322,7 +325,7 @@ OverlaysObj.prototype.dropdown = function(config) {
         dropdown.add(option);
     }
 
-    $(skeletonDivs.iconDiv).addClass('AlertIconQuestion');
+    $(skeletonDivs.iconContainingDiv).addClass('AlertIconQuestion').html('&#xe602');
 
     var okDiv = document.createElement('div');
     $(okDiv).addClass("AlertBtn").addClass("AlertConfirmBtn").html("OK").appendTo($(skeletonDivs.contentDiv)).click(function () {
@@ -421,7 +424,7 @@ OverlaysObj.prototype.input = function(config) {
         inputs.push(input);
     }
 
-    $(skeletonDivs.iconDiv).addClass('AlertIconQuestion');
+    $(skeletonDivs.iconContainingDiv).addClass('AlertIconQuestion').html('&#xe602');
 
     var okDiv = document.createElement('div');
     $(okDiv).addClass("AlertBtn").addClass("AlertConfirmBtn").html("OK").appendTo($(skeletonDivs.contentDiv)).click(function () {
