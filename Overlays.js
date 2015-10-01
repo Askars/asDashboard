@@ -415,6 +415,11 @@ OverlaysObj.prototype.input = function(config) {
     var inputs = [];
 
     for (var idx in config.inputs) {
+        if (config.inputs[idx].input_label != null) {
+            var input_label = document.createElement('div');
+            $(input_label).addClass("AlertInputLabel").html(config.inputs[idx].input_label).appendTo($(skeletonDivs.rightDiv));
+        }
+
         var input = document.createElement('input');
 
         if (config.inputs[idx].value == null) {
@@ -453,19 +458,24 @@ OverlaysObj.prototype.input = function(config) {
 
 OverlaysObj.prototype.buildOverlayEditSpace = function (overlayDiv) {
     var result = {};
-    result.info_div = document.createElement('div');
-    $(result.info_div).addClass("asEditSpaceContentAlignment asEditSpaceContent").appendTo($(overlayDiv));
 
     result.title_div = document.createElement('div');
-    $(result.title_div).addClass('asEditSpaceContentAlignment asEditSpaceHeader').appendTo($(overlayDiv));
+    $(result.title_div).addClass('asEditSpaceHeader').appendTo($(overlayDiv));
+
+    result.info_div = document.createElement('div');
+    $(result.info_div).addClass("asEditSpaceContent").appendTo($(overlayDiv));
 
     var buttons = document.createElement('div');
-    $(buttons).addClass('asEditSpaceContentAlignment asEditSpaceButtons').appendTo($(overlayDiv));
+    $(buttons).addClass('asEditSpaceButtons').appendTo($(overlayDiv));
 
     result.cancel_btn = document.createElement('div');
-    $(result.cancel_btn).addClass('asEditSpaceButton').html('cancel').appendTo($(buttons));
+    $(result.cancel_btn).addClass('asEditSpaceButton').html('Cancel').appendTo($(buttons));
+
+    var sep_div = document.createElement('div');
+    $(sep_div).addClass('asEditSpaceButtonSeparator').appendTo($(buttons));
+
     result.done_btn = document.createElement('div');
-    $(result.done_btn).addClass('asEditSpaceButton').html('done').appendTo($(buttons));
+    $(result.done_btn).addClass('asEditSpaceButton').html('OK').appendTo($(buttons));
 
     return result;
 }
