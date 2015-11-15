@@ -129,7 +129,7 @@ OverlaysObj.prototype.alert = function(msg, callback) {
     skeletonDivs = this.buildAlertSkeleton();
     $(skeletonDivs.rightDiv).html(msg);
 
-    $(skeletonDivs.iconContainingDiv).addClass('AlertIconAlert').html('&#xe600');
+    $(skeletonDivs.iconContainingDiv).addClass('AlertIconAlert').html('<span class="icon-alert_exclamation"/>');
     $(skeletonDivs.titleBarDiv).html("ATTENTION");
 
     var okDiv = document.createElement('div');
@@ -167,7 +167,7 @@ OverlaysObj.prototype.confirm = function(config) {
     var msgDiv = document.createElement('div');
     $(msgDiv).html(config.msg).appendTo(skeletonDivs.rightDiv);
 
-    $(skeletonDivs.iconContainingDiv).addClass('AlertIconQuestion').html('&#xe602');
+    $(skeletonDivs.iconContainingDiv).addClass('AlertIconQuestion').html('<span class="icon-alert_question"/>');
     $(skeletonDivs.titleBarDiv).html("CONFIRMATION REQUIRED");
 
     var okDiv = document.createElement('div');
@@ -236,7 +236,7 @@ OverlaysObj.prototype.options = function(config) {
     });
 
 
-    $(skeletonDivs.iconContainingDiv).addClass('AlertIconQuestion').html('&#xe602');
+    $(skeletonDivs.iconContainingDiv).addClass('AlertIconQuestion').html('<span class="icon-alert_question"/>');
     $(skeletonDivs.titleBarDiv).html("CHOICE REQUIRED");
 
     var msgDiv = document.createElement('div');
@@ -334,7 +334,7 @@ OverlaysObj.prototype.dropdown = function(config) {
         dropdown.add(option);
     }
 
-    $(skeletonDivs.iconContainingDiv).addClass('AlertIconQuestion').html('&#xe602');
+    $(skeletonDivs.iconContainingDiv).addClass('AlertIconQuestion').html('<span class="icon-alert_question"/>');
 
     var okDiv = document.createElement('div');
     $(okDiv).addClass("AlertBtn").addClass("AlertConfirmBtn").html("OK").appendTo($(skeletonDivs.contentDiv)).click(function () {
@@ -438,7 +438,7 @@ OverlaysObj.prototype.input = function(config) {
         inputs.push(input);
     }
 
-    $(skeletonDivs.iconContainingDiv).addClass('AlertIconQuestion').html('&#xe602');
+    $(skeletonDivs.iconContainingDiv).addClass('AlertIconQuestion').html('<span class="icon-alert_question"/>');
 
     var okDiv = document.createElement('div');
     $(okDiv).addClass("AlertBtn").addClass("AlertConfirmBtn").html("OK").appendTo($(skeletonDivs.contentDiv)).click(function () {
